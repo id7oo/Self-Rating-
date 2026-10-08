@@ -1,13 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>PEC Self-Rating</title>
-<meta name="description" content="Discover your 10 Personal Entrepreneurial Competencies with the standard PEC self-rating questionnaire. 55 statements, about 8 minutes.">
+<meta name="description" content="Discover your 10 Personal Entrepreneurial Competencies with the standard PEC self-rating questionnaire. اكتشف كفاءاتك الريادية الشخصية العشر.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&family=Readex+Pro:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: one focused column; a single statement card at a time, then a profile sheet that mirrors the paper PEC chart (0–25 scale, X's joined by a line). */
 :root{
@@ -16,7 +16,7 @@
   --ink:#0E1A2F;
   --muted:#5A6680;
   --line:#D5DBE6;
-  --accent:#F2541B;      /* ember: the one bold colour */
+  --accent:#F2541B;
   --accent-ink:#FFFFFF;
   --accent-soft:#FDE3D8;
   --sky:#2F6BFF;
@@ -26,7 +26,15 @@
   --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
   --f-body:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
   --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --f-label:var(--f-mono);
+  --dx:40px;
   --r:18px;
+}
+:root[lang="ar"]{
+  --f-display:"Readex Pro","IBM Plex Sans Arabic","Geeza Pro","Segoe UI",Tahoma,sans-serif;
+  --f-body:"IBM Plex Sans Arabic","Geeza Pro","Segoe UI",Tahoma,sans-serif;
+  --f-label:var(--f-body);
+  --dx:-40px;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -43,7 +51,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html,body{margin:0}
+html,body{margin:0;overflow-x:clip}
 body{
   background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
   -webkit-font-smoothing:antialiased;min-height:100vh;
@@ -51,9 +59,23 @@ body{
 [hidden]{display:none!important}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--sky);outline-offset:3px;border-radius:10px}
-.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:20px 48px}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:14px 48px}
 h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.02em}
-.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+:root[lang="ar"] h1,:root[lang="ar"] h2,:root[lang="ar"] h3{letter-spacing:0;line-height:1.25}
+.eyebrow{font-family:var(--f-label);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+:root[lang="ar"] .eyebrow{font-size:14px;letter-spacing:0;font-weight:600}
+.flip{transition:none}
+[dir="rtl"] .flip{transform:scaleX(-1)}
+.ltr{direction:ltr;unicode-bidi:isolate}
+
+/* language toggle */
+.langbar{display:flex;justify-content:flex-end;margin-bottom:10px}
+.seg{display:inline-flex;padding:4px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
+.seg button{border:0;background:transparent;padding:7px 14px;border-radius:999px;font-size:14px;font-weight:600;color:var(--muted);min-width:64px}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.seg button[lang="ar"]{font-family:"IBM Plex Sans Arabic","Geeza Pro",Tahoma,sans-serif}
+.seg button[lang="en"]{font-family:"Figtree",system-ui,sans-serif}
+
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;
   padding:16px 28px;font-weight:700;font-size:17px;background:var(--accent);color:var(--accent-ink);
@@ -65,18 +87,23 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .btn.ghost:hover{box-shadow:inset 0 0 0 2px var(--ink)}
 
 /* ---------- Intro ---------- */
-.intro{display:grid;gap:28px;padding-top:4vh}
-.mark{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-weight:700;font-size:13px;letter-spacing:.08em}
-.mark i{width:26px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-style:normal;font-size:13px}
+.intro{display:grid;gap:28px;padding-top:2vh}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.08em}
+:root[lang="ar"] .mark{letter-spacing:0;font-size:15px}
+.mark i{width:auto;padding-inline:7px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-style:normal;font-size:12px;font-family:var(--f-mono)}
 .intro h1{font-size:clamp(40px,9vw,72px);line-height:.95;font-weight:800}
+:root[lang="ar"] .intro h1{font-size:clamp(36px,8.5vw,64px);line-height:1.35;font-weight:700}
 .intro h1 em{font-style:normal;color:var(--accent)}
 .lede{font-size:18px;color:var(--muted);max-width:52ch;margin:0}
-.facts{display:flex;flex-wrap:wrap;gap:10px 22px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
-.facts b{color:var(--ink);font-size:15px}
+.facts{display:flex;flex-wrap:wrap;gap:10px 22px;font-family:var(--f-label);font-size:13px;color:var(--muted)}
+:root[lang="ar"] .facts{font-size:15px}
+.facts b{color:var(--ink);font-size:15px;font-family:var(--f-mono)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+:root[lang="ar"] .chip{font-size:14px}
 .scale-hint{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:460px}
 .scale-hint div{text-align:center;font-size:12px;color:var(--muted)}
+:root[lang="ar"] .scale-hint div{font-size:13px}
 .scale-hint b{display:block;font-family:var(--f-mono);font-size:18px;color:var(--ink)}
 
 /* ---------- Quiz ---------- */
@@ -87,21 +114,22 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .iconbtn svg{width:20px;height:20px}
 .stages{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .stage{height:8px;border-radius:99px;background:var(--line);overflow:hidden;position:relative}
-.stage span{position:absolute;inset:0;width:0;background:var(--accent);border-radius:inherit;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.stage span{position:absolute;inset-block:0;inset-inline-start:0;width:0;background:var(--accent);border-radius:inherit;transition:width .35s cubic-bezier(.2,.8,.2,1)}
 .stage.done span{background:var(--good)}
-.count{font-family:var(--f-mono);font-size:14px;font-weight:700;min-width:62px;text-align:right;font-variant-numeric:tabular-nums}
+.count{font-family:var(--f-mono);font-size:14px;font-weight:700;min-width:62px;text-align:end;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
 .count small{color:var(--muted);font-weight:500}
-.stage-name{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
 .card{
   background:var(--surface);border-radius:28px;box-shadow:var(--shadow);padding:clamp(24px,5vw,44px);
   min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:14px;position:relative;overflow:hidden;
 }
-.card .qnum{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.06em}
+.card .qnum{font-family:var(--f-label);font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.06em}
+:root[lang="ar"] .card .qnum{letter-spacing:0;font-size:15px}
 .card .qtext{font-family:var(--f-display);font-weight:600;font-size:clamp(23px,4.6vw,32px);line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
+:root[lang="ar"] .card .qtext{font-weight:500;line-height:1.55;letter-spacing:0;font-size:clamp(22px,4.4vw,30px)}
 .card.in{animation:cardIn .38s cubic-bezier(.2,.8,.2,1)}
 .card.back{animation:cardBack .38s cubic-bezier(.2,.8,.2,1)}
-@keyframes cardIn{from{opacity:0;transform:translateX(40px) rotate(1.5deg)}to{opacity:1;transform:none}}
-@keyframes cardBack{from{opacity:0;transform:translateX(-40px) rotate(-1.5deg)}to{opacity:1;transform:none}}
+@keyframes cardIn{from{opacity:0;transform:translateX(var(--dx))}to{opacity:1;transform:none}}
+@keyframes cardBack{from{opacity:0;transform:translateX(calc(var(--dx) * -1))}to{opacity:1;transform:none}}
 .answers{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
 .ans{
   border:0;background:var(--surface);border-radius:var(--r);padding:14px 6px 12px;display:grid;gap:4px;justify-items:center;
@@ -109,6 +137,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 }
 .ans b{font-family:var(--f-mono);font-size:22px;line-height:1}
 .ans span{font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.2}
+:root[lang="ar"] .ans span{font-size:14px}
 .ans:hover{box-shadow:inset 0 0 0 2px var(--ink);transform:translateY(-2px)}
 .ans.sel{background:var(--accent);box-shadow:none}
 .ans.sel b,.ans.sel span{color:var(--accent-ink)}
@@ -118,15 +147,15 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .kbd-hint kbd{font-family:var(--f-mono);font-size:12px;padding:2px 6px;border-radius:6px;box-shadow:inset 0 0 0 1px var(--line)}
 @media (max-width:560px){
   .answers{grid-template-columns:1fr;gap:8px}
-  .ans{grid-template-columns:36px 1fr;justify-items:start;align-items:center;padding:14px 18px;text-align:left}
-  .ans span{font-size:15px;color:var(--ink)}
+  .ans{grid-template-columns:36px 1fr;justify-items:start;align-items:center;padding:14px 18px;text-align:start}
+  .ans span,:root[lang="ar"] .ans span{font-size:16px;color:var(--ink)}
   .kbd-hint{display:none}
   .card{min-height:180px}
 }
 
 /* toast */
 .toast{
-  position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:20;
+  position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translate(-50%,-160%);z-index:20;
   background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:16px;display:flex;gap:12px;align-items:center;
   box-shadow:var(--shadow);transition:transform .45s cubic-bezier(.2,1.4,.4,1);max-width:calc(100% - 32px);
 }
@@ -141,25 +170,28 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
   background:var(--ink);color:var(--bg);border-radius:32px;padding:clamp(24px,6vw,44px);display:grid;gap:18px;position:relative;overflow:hidden;
 }
 .hero::after{
-  content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
+  content:"";position:absolute;inset-inline-end:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
   background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.55;pointer-events:none;
 }
 .hero .eyebrow{color:inherit;opacity:.7}
 .hero h1{font-size:clamp(38px,9vw,64px);line-height:.95;font-weight:800}
+:root[lang="ar"] .hero h1{line-height:1.25;font-weight:700;font-size:clamp(34px,8vw,56px)}
 .hero p{margin:0;opacity:.82;max-width:48ch}
 .hero-stats{display:flex;flex-wrap:wrap;gap:12px 30px;align-items:flex-end;position:relative;z-index:1}
-.big{font-family:var(--f-mono);font-weight:700;font-size:clamp(44px,11vw,68px);line-height:1;font-variant-numeric:tabular-nums}
+.big{font-family:var(--f-mono);font-weight:700;font-size:clamp(44px,11vw,68px);line-height:1;font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate;display:inline-block}
 .big small{font-size:.38em;opacity:.6}
 .tier{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px}
 .tierbar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:min(260px,100%)}
 .tierbar i{height:6px;border-radius:9px;background:currentColor;opacity:.2}
 .tierbar i.on{opacity:1;background:var(--accent)}
-.tierlbl{font-family:var(--f-mono);font-size:11px;opacity:.7;letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+.tierlbl{font-family:var(--f-label);font-size:11px;opacity:.7;letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+:root[lang="ar"] .tierlbl{font-size:13px;letter-spacing:0}
 
 .panel{background:var(--surface);border-radius:28px;padding:clamp(20px,5vw,32px);box-shadow:var(--shadow);display:grid;gap:18px;min-width:0}
 .panel h2{font-size:24px}
 .panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
 .legend{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+:root[lang="ar"] .legend{font-size:13px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:50%}
 
@@ -168,7 +200,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .prow{display:grid;grid-template-columns:minmax(0,1fr) 2fr;gap:6px 16px;align-items:center}
 .plabel{font-weight:600;font-size:14.5px;line-height:1.25;display:flex;justify-content:space-between;gap:8px;min-width:0}
 .plabel .val{font-family:var(--f-mono);font-weight:700;font-variant-numeric:tabular-nums}
-.track{position:relative;height:30px;border-radius:10px;
+.track{position:relative;height:30px;border-radius:10px;direction:ltr;
   background:
     linear-gradient(90deg,transparent calc(20% - 1px),var(--line) calc(20% - 1px),var(--line) 20%,transparent 20%,transparent calc(40% - 1px),var(--line) calc(40% - 1px),var(--line) 40%,transparent 40%,transparent calc(60% - 1px),var(--line) calc(60% - 1px),var(--line) 60%,transparent 60%,transparent calc(80% - 1px),var(--line) calc(80% - 1px),var(--line) 80%,transparent 80%),
     var(--bg);}
@@ -179,7 +211,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .lv-strong{--c:var(--good)} .lv-solid{--c:var(--sky)} .lv-grow{--c:var(--accent)}
 .prow .dot,.prow .fill{background:var(--c)}
 .axis{display:grid;grid-template-columns:minmax(0,1fr) 2fr;gap:16px}
-.axis div:last-child{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.axis div:last-child{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:11px;color:var(--muted);direction:ltr}
 @media (max-width:560px){
   .prow,.axis{grid-template-columns:1fr}
   .axis div:first-child{display:none}
@@ -195,6 +227,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .badge.g{background:var(--accent-soft);color:var(--accent)}
 .list b{display:block;font-size:15px}
 .list p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+:root[lang="ar"] .list p{font-size:15px;line-height:1.7}
 
 .honesty{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
 .gauge{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:20px;
@@ -202,6 +235,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:
 .gauge::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--surface)}
 .gauge span{position:relative}
 .honesty p{margin:0;font-size:14.5px;color:var(--muted)}
+:root[lang="ar"] .honesty p{font-size:15px;line-height:1.75}
 .honesty b{color:var(--ink)}
 
 details{border-top:1px solid var(--line);padding-top:14px}
@@ -211,9 +245,11 @@ summary::after{content:"+";font-family:var(--f-mono);font-size:20px;color:var(--
 details[open] summary::after{content:"–"}
 .tablewrap{overflow-x:auto;margin-top:12px}
 table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
-th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-th:first-child,td:first-child{text-align:left;white-space:normal}
-th{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+th,td{padding:9px 8px;text-align:end;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:start;white-space:normal}
+th{font-family:var(--f-label);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+:root[lang="ar"] th{font-size:13px;letter-spacing:0;font-weight:600}
+td.num{direction:ltr;unicode-bidi:isolate}
 tfoot td{font-weight:700;border-bottom:0}
 
 .actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
@@ -230,72 +266,77 @@ tfoot td{font-weight:700;border-bottom:0}
 <div class="toast" id="toast" role="status" aria-live="polite"><div class="medal" id="toastMedal">1</div><div><b id="toastTitle"></b><small id="toastSub"></small></div></div>
 
 <main class="wrap">
+  <div class="langbar">
+    <div class="seg" role="group" aria-label="Language / اللغة">
+      <button type="button" id="langEn" data-lang="en" lang="en" aria-pressed="true">English</button>
+      <button type="button" id="langAr" data-lang="ar" lang="ar" aria-pressed="false">العربية</button>
+    </div>
+  </div>
+
   <!-- INTRO -->
   <section class="intro" id="intro">
-    <div class="mark"><i>PEC</i>SELF-RATING</div>
-    <h1>What kind of <em>entrepreneur</em> are you?</h1>
-    <p class="lede">Rate 55 short statements about how you work. You get a profile of your 10 Personal Entrepreneurial Competencies, your strongest traits, and what to grow next.</p>
+    <div class="mark"><i>PEC</i><span data-i18n="mark"></span></div>
+    <h1 data-i18n-html="h1"></h1>
+    <p class="lede" data-i18n="lede"></p>
     <div class="facts">
-      <span><b>55</b> statements</span>
-      <span><b>~8</b> minutes</span>
-      <span><b>10</b> competencies</span>
+      <span><b>55</b> <span data-i18n="fStatements"></span></span>
+      <span><b>~8</b> <span data-i18n="fMinutes"></span></span>
+      <span><b>10</b> <span data-i18n="fComp"></span></span>
     </div>
     <div class="chips" id="chips"></div>
     <div>
-      <div class="eyebrow" style="margin-bottom:10px">How true is each statement for you?</div>
-      <div class="scale-hint">
-        <div><b>1</b>Never</div><div><b>2</b>Rarely</div><div><b>3</b>Sometimes</div><div><b>4</b>Usually</div><div><b>5</b>Always</div>
-      </div>
+      <div class="eyebrow" style="margin-bottom:10px" data-i18n="howTrue"></div>
+      <div class="scale-hint" id="scaleHint"></div>
     </div>
-    <div><button class="btn" id="startBtn" type="button">Start the test
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
-    <p class="lede" style="font-size:14px">Answer for who you are today, not who you want to be. The test includes a built-in honesty check.</p>
+    <div><button class="btn" id="startBtn" type="button"><span data-i18n="start"></span>
+      <svg class="flip" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    <p class="lede" style="font-size:15px" data-i18n="honestNote"></p>
   </section>
 
   <!-- QUIZ -->
   <section class="quiz" id="quiz" hidden>
     <div class="topbar">
-      <button class="iconbtn" id="backBtn" type="button" aria-label="Previous statement">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      <button class="iconbtn" id="backBtn" type="button" data-i18n-aria="prev">
+        <svg class="flip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
       </button>
       <div class="stages" id="stages" aria-hidden="true"></div>
       <div class="count" id="count">1<small>/55</small></div>
     </div>
-    <div class="stage-name"><span class="eyebrow" id="stageLabel">Stage 1 · Warm-up</span></div>
+    <div><span class="eyebrow" id="stageLabel"></span></div>
     <article class="card in" id="card" aria-live="polite">
-      <div class="qnum" id="qnum">STATEMENT 01</div>
+      <div class="qnum" id="qnum"></div>
       <div class="qtext" id="qtext"></div>
     </article>
-    <div class="answers" id="answers" role="group" aria-label="Your rating"></div>
-    <div class="kbd-hint">Tip: press <kbd>1</kbd>–<kbd>5</kbd> to answer, <kbd>←</kbd> to go back</div>
+    <div class="answers" id="answers" role="group"></div>
+    <div class="kbd-hint" data-i18n-html="kbd"></div>
   </section>
 
   <!-- RESULTS -->
   <section class="results" id="results" hidden>
     <div class="hero">
-      <div class="eyebrow">Your entrepreneur type</div>
-      <h1 id="archetype">The Architect</h1>
+      <div class="eyebrow" data-i18n="yourType"></div>
+      <h1 id="archetype"></h1>
       <p id="archetypeDesc"></p>
       <div class="hero-stats">
         <div>
           <div class="big"><span id="totalNum">0</span><small>/250</small></div>
-          <div class="tierlbl">Corrected PEC score</div>
+          <div class="tierlbl" data-i18n="corrScore"></div>
         </div>
         <div>
-          <div class="tier" id="tierName">Builder</div>
+          <div class="tier" id="tierName"></div>
           <div class="tierbar" id="tierBar" style="margin-top:10px"><i></i><i></i><i></i><i></i></div>
-          <div class="tierlbl">Starter · Explorer · Builder · Trailblazer</div>
+          <div class="tierlbl" id="tierRow"></div>
         </div>
       </div>
     </div>
 
     <div class="panel">
       <div class="panel-head">
-        <h2>Your PEC profile</h2>
+        <h2 data-i18n="profile"></h2>
         <div class="legend">
-          <span><i style="background:var(--good)"></i>Strong 20+</span>
-          <span><i style="background:var(--sky)"></i>Solid 15–19</span>
-          <span><i style="background:var(--accent)"></i>Growing &lt;15</span>
+          <span><i style="background:var(--good)"></i><span data-i18n="lgStrong"></span></span>
+          <span><i style="background:var(--sky)"></i><span data-i18n="lgSolid"></span></span>
+          <span><i style="background:var(--accent)"></i><span data-i18n="lgGrow"></span></span>
         </div>
       </div>
       <div class="profile" id="profile"></div>
@@ -304,45 +345,48 @@ tfoot td{font-weight:700;border-bottom:0}
 
     <div class="cards2">
       <div class="panel">
-        <h2>Superpowers</h2>
+        <h2 data-i18n="strengths"></h2>
         <ul class="list" id="strengths"></ul>
       </div>
       <div class="panel">
-        <h2>Level up next</h2>
+        <h2 data-i18n="growth"></h2>
         <ul class="list" id="growth"></ul>
       </div>
     </div>
 
     <div class="panel">
-      <h2>Honesty check</h2>
+      <h2 data-i18n="honesty"></h2>
       <div class="honesty">
         <div class="gauge" id="gauge"><span id="cfNum">0</span></div>
         <p id="cfText"></p>
       </div>
       <details>
-        <summary>See the full score sheet</summary>
+        <summary data-i18n="sheet"></summary>
         <div class="tablewrap">
           <table>
-            <thead><tr><th>Competency</th><th>Score</th><th>Correction</th><th>Corrected</th></tr></thead>
+            <thead><tr><th data-i18n="thComp"></th><th data-i18n="thScore"></th><th data-i18n="thCorr"></th><th data-i18n="thCorrected"></th></tr></thead>
             <tbody id="sheet"></tbody>
-            <tfoot><tr><td>Total</td><td id="tRaw"></td><td></td><td id="tCor"></td></tr></tfoot>
+            <tfoot><tr><td data-i18n="total"></td><td id="tRaw"></td><td></td><td id="tCor"></td></tr></tfoot>
           </table>
         </div>
       </details>
     </div>
 
     <div class="actions">
-      <button class="btn" id="shareBtn" type="button">Share my result</button>
-      <button class="btn ghost" id="retakeBtn" type="button">Retake test</button>
+      <button class="btn" id="shareBtn" type="button" data-i18n="share"></button>
+      <button class="btn ghost" id="retakeBtn" type="button" data-i18n="retake"></button>
     </div>
-    <p class="note" id="shareNote" aria-live="polite">Your answers stay on this device and clear when you refresh.</p>
+    <p class="note" id="shareNote" aria-live="polite"></p>
   </section>
 </main>
 
 <script>
 (function(){
 "use strict";
-const Q = [
+
+/* ===== Statements ===== */
+const Q = {
+en: [
 "I look for things that need to be done.",
 "I prefer situations in which I can control the outcomes as much as possible.",
 "It bothers me when things are not done very well.",
@@ -398,75 +442,214 @@ const Q = [
 "I am able to get people who have strong opinions or ideas to change their minds.",
 "I stick with my decisions even if others disagree strongly with me.",
 "When I don’t know something, I don’t mind admitting it."
-];
+],
+ar: [
+"أبحث عن الأمور التي تحتاج إلى إنجاز.",
+"أفضّل المواقف التي أستطيع فيها التحكم في النتائج قدر الإمكان.",
+"يزعجني ألّا تُنجَز الأمور على نحو جيد جدًا.",
+"عندما أواجه مشكلة صعبة، أجرّب أشياء كثيرة ومختلفة بحثًا عن حل.",
+"أُنجز عملي في الوقت المحدد.",
+"عندما أبدأ مهمة أو مشروعًا جديدًا، أجمع قدرًا كبيرًا من المعلومات قبل المضيّ فيه.",
+"أحب التفكير في المستقبل.",
+"أخطط للمشروع الكبير بتقسيمه إلى مهام أصغر.",
+"أكسب دعم الآخرين لمقترحاتي.",
+"أشعر بالثقة بأنني سأنجح في أي شيء أحاول القيام به.",
+"أُحسن الإصغاء، أيًّا كان الشخص الذي أتحدث معه.",
+"أنجز الأمور التي تحتاج إلى إنجاز قبل أن يطلبها مني الآخرون.",
+"لا أجرّب شيئًا جديدًا قبل أن أبذل كل ما بوسعي لضمان نجاحي فيه.",
+"عملي أفضل من عمل الآخرين الذين أعمل معهم.",
+"أكرّر المحاولة عدة مرات لأجعل الآخرين يفعلون ما أريده منهم.",
+"أفي بالوعود التي أقطعها.",
+"أطلب المشورة من أشخاص لديهم معرفة واسعة بالمهام التي أعمل عليها.",
+"القلق بشأن ما ستفعله في حياتك مضيعة للوقت.",
+"أفكر في مزايا وعيوب الطرق المختلفة لإنجاز الأمور.",
+"لا أقضي وقتًا طويلًا في التفكير في كيفية التأثير في الآخرين.",
+"أغيّر رأيي إذا عارضني الآخرون بشدة.",
+"أشعر بالاستياء عندما لا تسير الأمور كما أريد.",
+"أحب التحديات والفرص الجديدة.",
+"أوازن بين فرص نجاحي وفشلي قبل أن أقرر القيام بأي شيء.",
+"يزعجني أن يُهدَر وقتي.",
+"عندما يعترض شيءٌ ما طريقي، أواصل المحاولة حتى أحقق ما أريد.",
+"يسعدني أن أقوم بعمل غيري إذا لزم الأمر لإنجاز العمل في موعده.",
+"أبادر بالتنفيذ دون أن أضيّع الوقت في جمع المعلومات.",
+"كلما كنت أكثر تحديدًا لما أريده من الحياة، زادت فرصتي في النجاح.",
+"أحاول التفكير في كل المشكلات التي قد تواجهني، وأخطط لما سأفعله إذا وقعت كلٌّ منها.",
+"أستعين بأشخاص مهمين لمساعدتي على تحقيق أهدافي.",
+"عندما أحاول القيام بأمر صعب أو فيه تحدٍّ، أشعر بالثقة بأنني سأنجح.",
+"مررت بإخفاقات في الماضي.",
+"أفضّل الأنشطة التي أعرفها جيدًا وأشعر بالارتياح عند القيام بها.",
+"أقوم بأشياء تنطوي على مخاطرة.",
+"لا أشعر أبدًا بالرضا التام عن الطريقة التي تُنجَز بها الأمور؛ فأنا أعتقد دائمًا أن هناك طريقة أفضل.",
+"عندما أواجه صعوبات كبيرة، أنتقل سريعًا إلى أمور أخرى.",
+"عندما أؤدي عملًا لشخص ما، أبذل جهدًا خاصًا لأتأكد من رضاه عن عملي.",
+"عندما أعمل على مشروع لشخص ما، أطرح أسئلة كثيرة لأتأكد من أنني أفهم ما يريده.",
+"لديّ خطة واضحة جدًا لحياتي.",
+"أتعامل مع المشكلات عند ظهورها، بدلًا من قضاء الوقت في محاولة توقّعها.",
+"لتحقيق أهدافي، أفكر في حلول تعود بالفائدة على جميع الأطراف المعنية بالمشكلة.",
+"أؤدي عملي بجودة عالية جدًا.",
+"مرّت بي مواقف استغللت فيها شخصًا ما.",
+"أجرّب أشياء جديدة تمامًا ومختلفة عمّا قمت به من قبل.",
+"أقوم بأشياء يعدّها الآخرون محفوفة بالمخاطر.",
+"أجد طرقًا لإنجاز المهام بشكل أسرع في العمل وفي المنزل.",
+"أجرّب عدة طرق لتجاوز ما يعيقني عن الوصول إلى أهدافي.",
+"عائلتي وحياتي الشخصية أهم عندي من مواعيد التسليم التي أحددها لنفسي في العمل.",
+"ألجأ إلى عدة مصادر مختلفة للحصول على المعلومات أو على المساعدة في المهام أو المشاريع.",
+"أهتم بتحقيق أهدافي الأسبوعية بقدر اهتمامي بتحقيق أهدافي السنوية.",
+"إذا لم ينجح أسلوبٌ ما في حل مشكلة، أفكر في أسلوب آخر.",
+"أستطيع أن أقنع أصحاب الآراء أو الأفكار القوية بتغيير رأيهم.",
+"أتمسك بقراراتي حتى لو عارضني الآخرون بشدة.",
+"عندما لا أعرف شيئًا، لا أمانع في الاعتراف بذلك."
+]};
 
-/* Formulas exactly as on the scoring sheet: negative item numbers are subtracted. */
-const PECS = [
- {name:"Opportunity Seeking and Initiative", short:"Opportunity Seeking", f:[1,12,23,-34,45], k:6,
-  type:"The Opportunity Hunter", type_d:"You spot what needs doing and move before anyone asks.",
-  s:"You see openings early and act on them without waiting.",
-  tip:"Each week, note one problem around you and take one step on it before anyone asks."},
- {name:"Risk Taking", short:"Risk Taking", f:[2,13,24,-35,46], k:6,
-  type:"The Calculated Bettor", type_d:"You take risks, but only after you have weighed the odds.",
-  s:"You weigh the odds and take moderate, calculated risks.",
-  tip:"Run one small, time-boxed experiment on an idea you have been holding back."},
- {name:"Demand for Efficiency and Quality", short:"Efficiency & Quality", f:[3,14,25,36,47], k:0,
-  type:"The Perfectionist", type_d:"You raise the bar and keep finding a better, faster way.",
-  s:"You push for higher standards and faster ways of working.",
-  tip:"Pick one routine task, set a quality or time target, and measure it."},
- {name:"Persistence", short:"Persistence", f:[4,15,26,-37,48], k:6,
-  type:"The Unstoppable", type_d:"Obstacles slow you down, they do not stop you.",
-  s:"You keep going and try new routes when blocked.",
-  tip:"When a plan stalls, list three other ways around the obstacle before you drop it."},
- {name:"Commitment to the Work Contract", short:"Commitment", f:[5,16,27,38,-49], k:6,
-  type:"The Promise Keeper", type_d:"People trust you because you deliver what you promise.",
-  s:"You keep promises and go the extra mile for the people you serve.",
-  tip:"Make fewer promises and keep every one. Track the deadlines you give others."},
- {name:"Information Seeking", short:"Information Seeking", f:[6,17,-28,39,50], k:6,
-  type:"The Investigator", type_d:"You dig for facts and ask the right people before you act.",
-  s:"You research, ask experts and check several sources.",
-  tip:"Before your next decision, talk to two people who know the field."},
- {name:"Goal Setting", short:"Goal Setting", f:[7,-18,29,40,51], k:6,
-  type:"The Navigator", type_d:"You know where you are going and set clear goals to get there.",
-  s:"You set clear, specific goals for the short and long term.",
-  tip:"Write one goal for this year and break it into what you will do this week."},
- {name:"Systematic Planning and Monitoring", short:"Planning & Monitoring", f:[8,19,30,-41,52], k:6,
-  type:"The Architect", type_d:"You break big plans into steps and track them as you go.",
-  s:"You plan in steps, anticipate problems and track progress.",
-  tip:"Break your next project into dated steps and review them every week."},
- {name:"Persuasion and Networking", short:"Persuasion & Networking", f:[9,-20,31,42,53], k:6,
-  type:"The Connector", type_d:"You bring people with you and build networks that open doors.",
-  s:"You win support and use your network to reach goals.",
-  tip:"List who could help your goal and how each of them benefits from saying yes."},
- {name:"Independence and Self-Confidence", short:"Self-Confidence", f:[10,-21,32,43,54], k:6,
-  type:"The Self-Starter", type_d:"You trust your own judgement and stand by your decisions.",
-  s:"You trust your judgement and stand by your decisions.",
-  tip:"Make one decision this week on your own judgement and stick with it."}
+/* ===== Scoring: formulas exactly as on the scoring sheet (negative = subtract) ===== */
+const F = [
+ {f:[1,12,23,-34,45], k:6},
+ {f:[2,13,24,-35,46], k:6},
+ {f:[3,14,25,36,47],  k:0},
+ {f:[4,15,26,-37,48], k:6},
+ {f:[5,16,27,38,-49], k:6},
+ {f:[6,17,-28,39,50], k:6},
+ {f:[7,-18,29,40,51], k:6},
+ {f:[8,19,30,-41,52], k:6},
+ {f:[9,-20,31,42,53], k:6},
+ {f:[10,-21,32,43,54],k:6}
 ];
 const CF = {f:[11,-22,-33,-44,55], k:18};
-const LABELS = ["Never","Rarely","Sometimes","Usually","Always"];
-const STAGES = ["Warm-up","Momentum","Deep dive","Home stretch","Final push"];
+
+/* ===== Text ===== */
+const P = {
+en: [
+ {name:"Opportunity Seeking and Initiative", short:"Opportunity Seeking", type:"The Opportunity Hunter", d:"You spot what needs doing and move before anyone asks.", s:"You see openings early and act on them without waiting.", tip:"Each week, note one problem around you and take one step on it before anyone asks."},
+ {name:"Risk Taking", short:"Risk Taking", type:"The Calculated Bettor", d:"You take risks, but only after you have weighed the odds.", s:"You weigh the odds and take moderate, calculated risks.", tip:"Run one small, time-boxed experiment on an idea you have been holding back."},
+ {name:"Demand for Efficiency and Quality", short:"Efficiency & Quality", type:"The Perfectionist", d:"You raise the bar and keep finding a better, faster way.", s:"You push for higher standards and faster ways of working.", tip:"Pick one routine task, set a quality or time target, and measure it."},
+ {name:"Persistence", short:"Persistence", type:"The Unstoppable", d:"Obstacles slow you down, they do not stop you.", s:"You keep going and try new routes when blocked.", tip:"When a plan stalls, list three other ways around the obstacle before you drop it."},
+ {name:"Commitment to the Work Contract", short:"Commitment", type:"The Promise Keeper", d:"People trust you because you deliver what you promise.", s:"You keep promises and go the extra mile for the people you serve.", tip:"Make fewer promises and keep every one. Track the deadlines you give others."},
+ {name:"Information Seeking", short:"Information Seeking", type:"The Investigator", d:"You dig for facts and ask the right people before you act.", s:"You research, ask experts and check several sources.", tip:"Before your next decision, talk to two people who know the field."},
+ {name:"Goal Setting", short:"Goal Setting", type:"The Navigator", d:"You know where you are going and set clear goals to get there.", s:"You set clear, specific goals for the short and long term.", tip:"Write one goal for this year and break it into what you will do this week."},
+ {name:"Systematic Planning and Monitoring", short:"Planning & Monitoring", type:"The Architect", d:"You break big plans into steps and track them as you go.", s:"You plan in steps, anticipate problems and track progress.", tip:"Break your next project into dated steps and review them every week."},
+ {name:"Persuasion and Networking", short:"Persuasion & Networking", type:"The Connector", d:"You bring people with you and build networks that open doors.", s:"You win support and use your network to reach goals.", tip:"List who could help your goal and how each of them benefits from saying yes."},
+ {name:"Independence and Self-Confidence", short:"Self-Confidence", type:"The Self-Starter", d:"You trust your own judgement and stand by your decisions.", s:"You trust your judgement and stand by your decisions.", tip:"Make one decision this week on your own judgement and stick with it."}
+],
+ar: [
+ {name:"البحث عن الفرص والمبادرة", short:"البحث عن الفرص", type:"عينٌ على الفرص", d:"رصدٌ لما يحتاج إلى إنجاز، وتحرّكٌ قبل أن يطلب منك أحد.", s:"رصدٌ مبكر للفرص، ومبادرة إلى اغتنامها دون انتظار.", tip:"تدوين مشكلة واحدة كل أسبوع، واتخاذ خطوة نحو حلها قبل أن يطلب منك أحد ذلك."},
+ {name:"المخاطرة المحسوبة", short:"المخاطرة المحسوبة", type:"جرأةٌ محسوبة", d:"إقدامٌ على المخاطرة، ولكن بعد موازنة الاحتمالات.", s:"موازنةٌ للاحتمالات، وإقدامٌ على مخاطر معتدلة ومدروسة.", tip:"تجربة فكرة مؤجلة منذ مدة على نطاق صغير، بوقت وميزانية محددَين."},
+ {name:"الحرص على الكفاءة والجودة", short:"الكفاءة والجودة", type:"شغفٌ بالإتقان", d:"رفعٌ دائم لمستوى الجودة، وبحثٌ مستمر عن طريقة أفضل وأسرع.", s:"سعيٌ إلى معايير أعلى وطرق عمل أسرع.", tip:"اختيار مهمة روتينية واحدة، ووضع هدف لجودتها أو لوقت إنجازها، ثم قياس النتيجة."},
+ {name:"المثابرة", short:"المثابرة", type:"عزيمةٌ لا تلين", d:"العقبات قد تبطئ خطاك، لكنها لا توقفك.", s:"مواصلةٌ للمحاولة، وبحثٌ عن طرق جديدة عند مواجهة العقبات.", tip:"عند تعثّر الخطة، كتابة ثلاث طرق بديلة لتجاوز العقبة قبل التخلي عنها."},
+ {name:"الالتزام بعقد العمل", short:"الالتزام", type:"وفاءٌ بالالتزام", d:"ثقة الآخرين بك نابعة من وفائك بما وعدت به.", s:"وفاءٌ بالوعود، وبذلُ جهد إضافي لإرضاء العملاء والشركاء.", tip:"تقليل الوعود والوفاء بها جميعًا، مع متابعة المواعيد الملتزَم بها أمام الآخرين."},
+ {name:"البحث عن المعلومات", short:"البحث عن المعلومات", type:"فضول الباحث", d:"تنقيبٌ عن الحقائق، وسؤالٌ لأهل الخبرة قبل اتخاذ أي خطوة.", s:"بحثٌ واستشارة لأهل الخبرة، ورجوعٌ إلى مصادر متعددة.", tip:"استشارة شخصين من أهل الخبرة في المجال قبل اتخاذ القرار القادم."},
+ {name:"تحديد الأهداف", short:"تحديد الأهداف", type:"بوصلةٌ واضحة", d:"وضوحٌ في الوجهة، وأهدافٌ محددة للوصول إليها.", s:"أهدافٌ واضحة ومحددة على المديين القصير والطويل.", tip:"تحديد هدف واحد لهذا العام، وتقسيمه إلى ما يمكن إنجازه هذا الأسبوع."},
+ {name:"التخطيط المنهجي والمتابعة", short:"التخطيط والمتابعة", type:"تخطيطٌ محكم", d:"تقسيمٌ للخطط الكبيرة إلى خطوات، ومتابعةٌ مستمرة لتنفيذها.", s:"تخطيطٌ على مراحل، وتوقّعٌ للمشكلات، ومتابعةٌ للتقدم.", tip:"تقسيم المشروع القادم إلى خطوات بتواريخ محددة، ومراجعتها كل أسبوع."},
+ {name:"الإقناع وبناء شبكة العلاقات", short:"الإقناع والعلاقات", type:"قوة التأثير", d:"قدرةٌ على كسب تأييد الناس، وبناءُ علاقات تفتح الأبواب.", s:"كسبٌ للتأييد، واستثمارٌ لشبكة العلاقات في تحقيق الأهداف.", tip:"حصر الأشخاص القادرين على دعم هدفك، وتوضيح الفائدة التي تعود على كلٍّ منهم من هذا الدعم."},
+ {name:"الاستقلالية والثقة بالنفس", short:"الثقة بالنفس", type:"ثقةٌ راسخة", d:"ثقةٌ بحكمك الشخصي، وثباتٌ على قراراتك.", s:"ثقةٌ بالرأي الشخصي، وثباتٌ على القرارات.", tip:"اتخاذ قرار واحد هذا الأسبوع بناءً على تقديرك الشخصي، والتمسك به."}
+]};
+
+const T = {
+en: {
+  title:"PEC Self-Rating", mark:"SELF-RATING",
+  h1:"What kind of <em>entrepreneur</em> are you?",
+  lede:"Rate 55 short statements about how you work. You get a profile of your 10 Personal Entrepreneurial Competencies, your strongest traits, and what to grow next.",
+  fStatements:"statements", fMinutes:"minutes", fComp:"competencies",
+  howTrue:"How true is each statement for you?",
+  scale:["Never","Rarely","Sometimes","Usually","Always"],
+  start:"Start the test",
+  honestNote:"Answer for who you are today, not who you want to be. The test includes a built-in honesty check.",
+  prev:"Previous statement", rating:"Your rating",
+  stages:["Warm-up","Momentum","Deep dive","Home stretch","Final push"],
+  stage:(n,name)=>`Stage ${n} · ${name}`,
+  qnum:n=>"STATEMENT "+String(n).padStart(2,"0"),
+  kbd:"Tip: press <kbd>1</kbd>–<kbd>5</kbd> to answer, <kbd>←</kbd> to go back",
+  toastT:n=>`Stage ${n} cleared`, toastS:(next,left)=>`${next} next · ${left} to go`,
+  yourType:"Your entrepreneur type", corrScore:"Corrected PEC score",
+  tiers:["Starter","Explorer","Builder","Trailblazer"], level:(n,t)=>`Level ${n} · ${t}`,
+  topIs:n=>` Your strongest competency is ${n}.`,
+  profile:"Your PEC profile", lgStrong:"Strong 20+", lgSolid:"Solid 15–19", lgGrow:"Growing <15",
+  of25:(n,v)=>`${n}: ${v} of 25`,
+  strengths:"Superpowers", growth:"Level up next", honesty:"Honesty check",
+  cfHigh:(cf,c)=>`Your correction factor is <b>${cf}</b>, which suggests you rated yourself quite favourably. To keep the profile realistic, <b>${c} points</b> were subtracted from each competency.`,
+  cfOk:cf=>`Your correction factor is <b>${cf}</b> (19 or less), so your answers look balanced and <b>no correction</b> was needed.`,
+  sheet:"See the full score sheet", thComp:"Competency", thScore:"Score", thCorr:"Correction", thCorrected:"Corrected", total:"Total",
+  share:"Share my result", retake:"Retake test",
+  note:"Your answers stay on this device and clear when you refresh.",
+  copied:"Copied to clipboard. Paste it anywhere to share.",
+  shareText:(type,total,tier,tops)=>`My PEC entrepreneur type: ${type} (${total}/250, ${tier}). Top strengths: ${tops}. Take the test:`,
+  sep:", "
+},
+ar: {
+  title:"التقييم الذاتي للكفاءات الريادية", mark:"التقييم الذاتي للكفاءات الريادية",
+  h1:"أيّ نوع من <em>روّاد الأعمال</em> أنت؟",
+  lede:"55 عبارة قصيرة عن أسلوبك في العمل، وفي النهاية ملفٌّ يعرض كفاءاتك الريادية الشخصية العشر، وأبرز نقاط قوتك، وما يستحق التطوير.",
+  fStatements:"عبارة", fMinutes:"دقائق تقريبًا", fComp:"كفاءات",
+  howTrue:"إلى أي مدى تنطبق كل عبارة عليك؟",
+  scale:["أبدًا","نادرًا","أحيانًا","غالبًا","دائمًا"],
+  start:"بدء الاختبار",
+  honestNote:"الإجابة عن واقعك الحالي، لا عن طموحاتك، تمنحك نتيجة أدق. ويتضمن الاختبار مقياسًا مدمجًا للمصداقية.",
+  prev:"العبارة السابقة", rating:"تقييمك",
+  stages:["الإحماء","الانطلاق","التعمّق","المنعطف الأخير","خط النهاية"],
+  stage:(n,name)=>`المرحلة ${n} · ${name}`,
+  qnum:n=>"العبارة "+n,
+  kbd:"تلميح: المفاتيح <kbd>1</kbd>–<kbd>5</kbd> للإجابة، و<kbd>→</kbd> للرجوع",
+  toastT:n=>`اكتملت المرحلة ${n}`, toastS:(next,left)=>`التالية: ${next} · بقيت ${left} عبارة`,
+  yourType:"نمطك الريادي", corrScore:"مجموع الكفاءات بعد التصحيح",
+  tiers:["البداية","الاستكشاف","البناء","الريادة"], level:(n,t)=>`المستوى ${n} · ${t}`,
+  topIs:n=>` أقوى كفاءاتك: ${n}.`,
+  profile:"ملف كفاءاتك الريادية", lgStrong:"قوية: 20 فأكثر", lgSolid:"جيدة: 15–19", lgGrow:"قيد النمو: أقل من 15",
+  of25:(n,v)=>`${n}: ${v} من 25`,
+  strengths:"أبرز نقاط قوتك", growth:"فرص التطوير", honesty:"مؤشر المصداقية",
+  cfHigh:(cf,c)=>`معامل التصحيح لديك <b>${cf}</b>، وهذا يشير إلى أن تقييمك لنفسك جاء إيجابيًا بدرجة كبيرة. ولتكون النتائج أقرب إلى الواقع، خُصمت <b>${c} نقاط</b> من كل كفاءة.`,
+  cfOk:cf=>`معامل التصحيح لديك <b>${cf}</b> (19 أو أقل)، أي أن إجاباتك متوازنة، و<b>لم يلزم أي تصحيح</b>.`,
+  sheet:"عرض ورقة الدرجات كاملة", thComp:"الكفاءة", thScore:"الدرجة", thCorr:"التصحيح", thCorrected:"بعد التصحيح", total:"المجموع",
+  share:"مشاركة نتيجتي", retake:"إعادة الاختبار",
+  note:"تبقى إجاباتك على هذا الجهاز فقط، وتُمحى عند تحديث الصفحة.",
+  copied:"تم النسخ إلى الحافظة، وأصبحت النتيجة جاهزة للمشاركة.",
+  shareText:(type,total,tier,tops)=>`نمطي الريادي في اختبار الكفاءات الريادية: ${type} (${total}/250، مستوى ${tier}). أبرز نقاط قوتي: ${tops}. رابط الاختبار:`,
+  sep:"، "
+}};
+
 const PER = 11;
-
 const $ = id => document.getElementById(id);
-let ans = new Array(55).fill(0), idx = 0, busy = false;
+let lang = "en", ans = new Array(55).fill(0), idx = 0, busy = false, result = null;
+const t = () => T[lang];
 
-/* intro chips */
-$("chips").innerHTML = PECS.map(p=>`<span class="chip">${p.short}</span>`).join("");
+/* ===== Language ===== */
+function pickInitialLang(){
+  const h = (location.hash||"").replace("#","").toLowerCase();
+  if(h==="ar"||h==="en") return h;
+  try{ const s = localStorage.getItem("pec-lang"); if(s==="ar"||s==="en") return s; }catch(e){}
+  return (navigator.language||"").toLowerCase().startsWith("ar") ? "ar" : "en";
+}
+function setLang(l){
+  lang = l;
+  const root = document.documentElement;
+  root.lang = l; root.dir = l==="ar" ? "rtl" : "ltr";
+  document.title = t().title;
+  try{ localStorage.setItem("pec-lang", l); }catch(e){}
+  $("langEn").setAttribute("aria-pressed", l==="en");
+  $("langAr").setAttribute("aria-pressed", l==="ar");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{ el.textContent = t()[el.dataset.i18n]; });
+  document.querySelectorAll("[data-i18n-html]").forEach(el=>{ el.innerHTML = t()[el.dataset.i18nHtml]; });
+  document.querySelectorAll("[data-i18n-aria]").forEach(el=>{ el.setAttribute("aria-label", t()[el.dataset.i18nAria]); });
+  $("chips").innerHTML = P[l].map(p=>`<span class="chip">${p.short}</span>`).join("");
+  $("scaleHint").innerHTML = t().scale.map((s,i)=>`<div><b>${i+1}</b>${s}</div>`).join("");
+  document.querySelectorAll(".ans span").forEach((s,i)=> s.textContent = t().scale[i]);
+  $("answers").setAttribute("aria-label", t().rating);
+  if(!$("results").hidden || !result) $("shareNote").textContent = t().note;
+  if(!$("quiz").hidden) render(null);
+  if(!$("results").hidden && result) renderResults(false);
+}
 
-/* stages + answer buttons */
-$("stages").innerHTML = STAGES.map(()=>'<div class="stage"><span></span></div>').join("");
-$("answers").innerHTML = LABELS.map((l,i)=>`<button class="ans" type="button" data-v="${i+1}" id="ans${i+1}"><b>${i+1}</b><span>${l}</span></button>`).join("");
+/* ===== Quiz ===== */
+$("stages").innerHTML = Array.from({length:5},()=>'<div class="stage"><span></span></div>').join("");
+$("answers").innerHTML = [1,2,3,4,5].map(v=>`<button class="ans" type="button" data-v="${v}" id="ans${v}"><b>${v}</b><span></span></button>`).join("");
 
 function show(id){ ["intro","quiz","results"].forEach(s=>$(s).hidden = s!==id); window.scrollTo({top:0}); }
 
 function render(dir){
   const card = $("card");
-  $("qnum").textContent = "STATEMENT " + String(idx+1).padStart(2,"0");
-  $("qtext").textContent = Q[idx];
+  $("qnum").textContent = t().qnum(idx+1);
+  $("qtext").textContent = Q[lang][idx];
   $("count").innerHTML = (idx+1) + "<small>/55</small>";
   const st = Math.floor(idx/PER);
-  $("stageLabel").textContent = `Stage ${st+1} · ${STAGES[st]}`;
+  $("stageLabel").textContent = t().stage(st+1, t().stages[st]);
   document.querySelectorAll(".stage").forEach((el,i)=>{
     const answered = ans.slice(i*PER,(i+1)*PER).filter(Boolean).length;
     el.querySelector("span").style.width = (answered/PER*100)+"%";
@@ -474,7 +657,7 @@ function render(dir){
   });
   document.querySelectorAll(".ans").forEach(b=>b.classList.toggle("sel", +b.dataset.v===ans[idx]));
   $("backBtn").disabled = idx===0;
-  card.classList.remove("in","back"); void card.offsetWidth; card.classList.add(dir==="back"?"back":"in");
+  if(dir){ card.classList.remove("in","back"); void card.offsetWidth; card.classList.add(dir==="back"?"back":"in"); }
 }
 
 function answer(v){
@@ -489,8 +672,7 @@ function answer(v){
   setTimeout(()=>{
     busy = false;
     if(ans.every(Boolean) && idx===54){ finish(); return; }
-    if(stageNowDone && (idx+1)%PER===0 && idx<54) toast(st+1, `Stage ${st+1} cleared`, `${STAGES[st+1]} next · ${55-(idx+1)} to go`);
-    // jump to next unanswered, else next
+    if(stageNowDone && (idx+1)%PER===0 && idx<54) toast(st+1, t().toastT(st+1), t().toastS(t().stages[st+1], 55-(idx+1)));
     let n = idx+1;
     if(n>54){ n = ans.findIndex(a=>!a); if(n<0){ finish(); return; } }
     idx = n; render("in");
@@ -502,123 +684,135 @@ function back(){ if(idx>0 && !busy){ idx--; render("back"); } }
 let tt;
 function toast(n,title,sub){
   $("toastMedal").textContent = n; $("toastTitle").textContent = title; $("toastSub").textContent = sub;
-  const t = $("toast"); t.classList.add("show"); clearTimeout(tt); tt = setTimeout(()=>t.classList.remove("show"), 2200);
+  const el = $("toast"); el.classList.add("show"); clearTimeout(tt); tt = setTimeout(()=>el.classList.remove("show"), 2200);
 }
 
-/* scoring */
+/* ===== Scoring ===== */
 const calc = (f,k) => f.reduce((s,n)=> s + (n>0 ? ans[n-1] : -ans[-n-1]), 0) + k;
-function correctionNumber(cf){ return cf>=24?7 : cf>=22?5 : cf>=20?3 : 0; }
+const correctionNumber = cf => cf>=24?7 : cf>=22?5 : cf>=20?3 : 0;
 const level = v => v>=20?"strong" : v>=15?"solid" : "grow";
 
 function finish(){
   const cf = calc(CF.f, CF.k), corr = correctionNumber(cf);
-  const rows = PECS.map((p,i)=>{ const raw = calc(p.f,p.k); return {p, i, raw, cor: Math.max(0, raw-corr)}; });
+  const rows = F.map((p,i)=>{ const raw = calc(p.f,p.k); return {i, raw, cor: Math.max(0, raw-corr)}; });
   const total = rows.reduce((s,r)=>s+r.cor,0), rawTotal = rows.reduce((s,r)=>s+r.raw,0);
   const sorted = [...rows].sort((a,b)=> b.cor-a.cor || a.i-b.i);
-  const top = sorted[0];
-
-  $("archetype").textContent = top.p.type;
-  $("archetypeDesc").textContent = top.p.type_d + ` Your strongest competency is ${top.p.name}.`;
-  const tiers = ["Starter","Explorer","Builder","Trailblazer"];
   const ti = total>=210?3 : total>=180?2 : total>=150?1 : 0;
-  $("tierName").textContent = "Level " + (ti+1) + " · " + tiers[ti];
+  result = {cf, corr, rows, total, rawTotal, sorted, ti};
+  $("shareNote").textContent = t().note;
+  show("results");
+  renderResults(true);
+}
+
+function renderResults(animate){
+  const {cf, corr, rows, total, rawTotal, sorted, ti} = result;
+  const L = P[lang], top = sorted[0];
+  $("archetype").textContent = L[top.i].type;
+  $("archetypeDesc").textContent = L[top.i].d + t().topIs(L[top.i].name);
+  $("tierName").textContent = t().level(ti+1, t().tiers[ti]);
+  $("tierRow").textContent = t().tiers.join(" · ");
   document.querySelectorAll("#tierBar i").forEach((el,i)=>el.classList.toggle("on", i<=ti));
 
-  // profile
-  $("profile").innerHTML = '<svg class="link" id="linkSvg" aria-hidden="true"><polyline id="poly" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/></svg>' +
-    rows.map(r=>`<div class="prow lv-${level(r.cor)}"><div class="plabel"><span>${r.p.name}</span><span class="val">${r.cor}</span></div>
-      <div class="track" role="img" aria-label="${r.p.name}: ${r.cor} of 25"><div class="fill"></div><div class="dot">✕</div></div></div>`).join("");
+  $("profile").innerHTML = '<svg class="link" aria-hidden="true"><polyline id="poly" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/></svg>' +
+    rows.map(r=>`<div class="prow lv-${level(r.cor)}"><div class="plabel"><span>${L[r.i].name}</span><span class="val">${r.cor}</span></div>
+      <div class="track" role="img" aria-label="${t().of25(L[r.i].name, r.cor)}"><div class="fill"></div><div class="dot">✕</div></div></div>`).join("");
 
-  // strengths / growth
-  const item = (r,cls,text) => `<li><div class="badge ${cls}">${r.cor}</div><div><b>${r.p.name}</b><p>${text}</p></div></li>`;
-  $("strengths").innerHTML = sorted.slice(0,3).map(r=>item(r,"s",r.p.s)).join("");
-  $("growth").innerHTML = sorted.slice(-3).reverse().map(r=>item(r,"g",r.p.tip)).join("");
+  const item = (r,cls,text) => `<li><div class="badge ${cls}">${r.cor}</div><div><b>${L[r.i].name}</b><p>${text}</p></div></li>`;
+  $("strengths").innerHTML = sorted.slice(0,3).map(r=>item(r,"s",L[r.i].s)).join("");
+  $("growth").innerHTML = sorted.slice(-3).reverse().map(r=>item(r,"g",L[r.i].tip)).join("");
 
-  // honesty
   const g = $("gauge");
   g.style.setProperty("--p", Math.round((cf-5)/20*100));
-  g.style.setProperty("--hc", corr? "var(--accent)" : "var(--good)");
+  g.style.setProperty("--hc", corr ? "var(--accent)" : "var(--good)");
   $("cfNum").textContent = cf;
-  $("cfText").innerHTML = corr
-    ? `Your correction factor is <b>${cf}</b>, which suggests you rated yourself quite favourably. To keep the profile realistic, <b>${corr} points</b> were subtracted from each competency.`
-    : `Your correction factor is <b>${cf}</b> (19 or less), so your answers look balanced and <b>no correction</b> was needed.`;
+  $("cfText").innerHTML = corr ? t().cfHigh(cf,corr) : t().cfOk(cf);
 
-  $("sheet").innerHTML = rows.map(r=>`<tr><td>${r.p.name}</td><td>${r.raw}</td><td>−${corr}</td><td>${r.cor}</td></tr>`).join("");
+  $("sheet").innerHTML = rows.map(r=>`<tr><td>${L[r.i].name}</td><td>${r.raw}</td><td class="num">−${corr}</td><td>${r.cor}</td></tr>`).join("");
   $("tRaw").textContent = rawTotal; $("tCor").textContent = total;
 
-  lastShare = `My PEC entrepreneur type: ${top.p.type} (${total}/250, ${tiers[ti]}). Top strengths: ${sorted.slice(0,3).map(r=>r.p.short).join(", ")}. Take the test:`;
-
-  show("results");
-  // animate in
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  const place = () => {
     document.querySelectorAll(".prow").forEach((row,i)=>{
       const pct = rows[i].cor/25*100;
       row.querySelector(".fill").style.width = pct+"%";
       row.querySelector(".dot").style.left = pct+"%";
     });
-    countUp($("totalNum"), total);
-    drawLink(); setTimeout(drawLink, 1050);
-    confetti();
-  }));
+  };
+  if(animate){
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      place(); countUp($("totalNum"), total);
+      drawLink(); setTimeout(drawLink, 1050);
+      confetti();
+    }));
+  } else {
+    document.querySelectorAll(".fill,.dot").forEach(el=>el.style.transition="none");
+    place(); $("totalNum").textContent = total; drawLink();
+  }
 }
 
 function drawLink(){
-  const prof = $("profile"); if(!prof || $("results").hidden) return;
+  const prof = $("profile"), poly = $("poly");
+  if(!prof || !poly || $("results").hidden) return;
   const base = prof.getBoundingClientRect();
   const pts = [...prof.querySelectorAll(".dot")].map(d=>{
     const r = d.getBoundingClientRect();
     return (r.left+r.width/2-base.left).toFixed(1)+","+(r.top+r.height/2-base.top).toFixed(1);
   });
-  $("poly").setAttribute("points", pts.join(" "));
+  poly.setAttribute("points", pts.join(" "));
 }
 window.addEventListener("resize", drawLink);
 
 function countUp(el, to){
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if(reduce){ el.textContent = to; return; }
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ el.textContent = to; return; }
   const t0 = performance.now(), d = 1100;
-  (function step(t){ const p = Math.min(1,(t-t0)/d); el.textContent = Math.round(to*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); })(t0);
+  (function step(now){ const p = Math.min(1,(now-t0)/d); el.textContent = Math.round(to*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); })(t0);
 }
 
 function confetti(){
   if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   const c = $("confetti"), ctx = c.getContext("2d"); c.hidden = false;
-  const W = c.width = innerWidth*devicePixelRatio, H = c.height = innerHeight*devicePixelRatio;
+  const dpr = devicePixelRatio || 1;
+  const W = c.width = innerWidth*dpr, H = c.height = innerHeight*dpr;
   const css = getComputedStyle(document.documentElement);
   const cols = ["--accent","--sky","--good","--gold"].map(v=>css.getPropertyValue(v).trim());
-  const P = Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*W*.2,y:H*.35,vx:(Math.random()-.5)*26*devicePixelRatio,vy:(-Math.random()*22-6)*devicePixelRatio,
-    s:(5+Math.random()*7)*devicePixelRatio,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.floor(Math.random()*4)]}));
+  const parts = Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*W*.2,y:H*.35,vx:(Math.random()-.5)*26*dpr,vy:(-Math.random()*22-6)*dpr,
+    s:(5+Math.random()*7)*dpr,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.floor(Math.random()*4)]}));
   const t0 = performance.now();
-  (function frame(t){
+  (function frame(now){
     ctx.clearRect(0,0,W,H);
-    P.forEach(p=>{ p.vy += .7*devicePixelRatio; p.vx*=.985; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+    parts.forEach(p=>{ p.vy += .7*dpr; p.vx*=.985; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
       ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); ctx.restore(); });
-    if(t-t0<2600) requestAnimationFrame(frame); else { ctx.clearRect(0,0,W,H); c.hidden = true; }
+    if(now-t0<2600) requestAnimationFrame(frame); else { ctx.clearRect(0,0,W,H); c.hidden = true; }
   })(t0);
 }
 
-let lastShare = "";
 async function share(){
-  const url = location.href.split("#")[0];
+  const {total, sorted, ti} = result, L = P[lang];
+  const text = t().shareText(L[sorted[0].i].type, total, t().tiers[ti], sorted.slice(0,3).map(r=>L[r.i].short).join(t().sep));
+  const url = location.href.split("#")[0] + "#" + lang;
   const note = $("shareNote");
   if(navigator.share){
-    try{ await navigator.share({title:"PEC Self-Rating", text:lastShare, url}); return; }catch(e){ if(e && e.name==="AbortError") return; }
+    try{ await navigator.share({title:t().title, text, url}); return; }catch(e){ if(e && e.name==="AbortError") return; }
   }
-  try{ await navigator.clipboard.writeText(lastShare+" "+url); note.textContent = "Copied to clipboard. Paste it anywhere to share."; }
-  catch(e){ note.textContent = lastShare+" "+url; }
+  try{ await navigator.clipboard.writeText(text+" "+url); note.textContent = t().copied; }
+  catch(e){ note.textContent = text+" "+url; }
 }
 
-/* events */
+/* ===== Events ===== */
+$("langEn").addEventListener("click", ()=>setLang("en"));
+$("langAr").addEventListener("click", ()=>setLang("ar"));
 $("startBtn").addEventListener("click", ()=>{ show("quiz"); render("in"); });
 $("answers").addEventListener("click", e=>{ const b = e.target.closest(".ans"); if(b) answer(+b.dataset.v); });
 $("backBtn").addEventListener("click", back);
-$("retakeBtn").addEventListener("click", ()=>{ ans.fill(0); idx = 0; $("shareNote").textContent = "Your answers stay on this device and clear when you refresh."; show("intro"); });
+$("retakeBtn").addEventListener("click", ()=>{ ans.fill(0); idx = 0; result = null; $("shareNote").textContent = t().note; show("intro"); });
 $("shareBtn").addEventListener("click", share);
 document.addEventListener("keydown", e=>{
   if($("quiz").hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+  const backKey = lang==="ar" ? "ArrowRight" : "ArrowLeft";
   if(e.key>="1" && e.key<="5"){ e.preventDefault(); answer(+e.key); }
-  else if(e.key==="ArrowLeft" || e.key==="Backspace"){ e.preventDefault(); back(); }
+  else if(e.key===backKey || e.key==="Backspace"){ e.preventDefault(); back(); }
 });
+
+setLang(pickInitialLang());
 })();
 </script>
 </body>
