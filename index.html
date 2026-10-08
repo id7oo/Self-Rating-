@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PEC Self-Rating</title>
+<meta name="description" content="Discover your 10 Personal Entrepreneurial Competencies with the standard PEC self-rating questionnaire. 55 statements, about 8 minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one focused column; a single statement card at a time, then a profile sheet that mirrors the paper PEC chart (0–25 scale, X's joined by a line). */
+:root{
+  --bg:#EDF0F5;
+  --surface:#FFFFFF;
+  --ink:#0E1A2F;
+  --muted:#5A6680;
+  --line:#D5DBE6;
+  --accent:#F2541B;      /* ember: the one bold colour */
+  --accent-ink:#FFFFFF;
+  --accent-soft:#FDE3D8;
+  --sky:#2F6BFF;
+  --good:#12936A;
+  --gold:#C98A00;
+  --shadow:0 1px 2px rgba(14,26,47,.06),0 12px 32px -12px rgba(14,26,47,.18);
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:18px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1220;--surface:#141D2F;--ink:#EAF0FA;--muted:#93A0B8;--line:#26324A;
+    --accent:#FF6A33;--accent-ink:#1A0B04;--accent-soft:#3A1F17;--sky:#6E9BFF;--good:#3CCB97;--gold:#F0B83A;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1220;--surface:#141D2F;--ink:#EAF0FA;--muted:#93A0B8;--line:#26324A;
+  --accent:#FF6A33;--accent-ink:#1A0B04;--accent-soft:#3A1F17;--sky:#6E9BFF;--good:#3CCB97;--gold:#F0B83A;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;min-height:100vh;
+}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--sky);outline-offset:3px;border-radius:10px}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:20px 48px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.02em}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:999px;
+  padding:16px 28px;font-weight:700;font-size:17px;background:var(--accent);color:var(--accent-ink);
+  transition:transform .15s ease,box-shadow .15s ease;box-shadow:0 8px 20px -8px var(--accent);
+}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 2px var(--line)}
+.btn.ghost:hover{box-shadow:inset 0 0 0 2px var(--ink)}
+
+/* ---------- Intro ---------- */
+.intro{display:grid;gap:28px;padding-top:4vh}
+.mark{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-weight:700;font-size:13px;letter-spacing:.08em}
+.mark i{width:26px;height:26px;border-radius:8px;background:var(--accent);display:grid;place-items:center;color:var(--accent-ink);font-style:normal;font-size:13px}
+.intro h1{font-size:clamp(40px,9vw,72px);line-height:.95;font-weight:800}
+.intro h1 em{font-style:normal;color:var(--accent)}
+.lede{font-size:18px;color:var(--muted);max-width:52ch;margin:0}
+.facts{display:flex;flex-wrap:wrap;gap:10px 22px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.facts b{color:var(--ink);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-size:13px;font-weight:600;padding:7px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.scale-hint{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;max-width:460px}
+.scale-hint div{text-align:center;font-size:12px;color:var(--muted)}
+.scale-hint b{display:block;font-family:var(--f-mono);font-size:18px;color:var(--ink)}
+
+/* ---------- Quiz ---------- */
+.quiz{display:grid;gap:22px;padding-top:8px}
+.topbar{display:flex;align-items:center;gap:12px}
+.iconbtn{width:44px;height:44px;border-radius:50%;border:0;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);display:grid;place-items:center;flex:none}
+.iconbtn:disabled{opacity:.35;cursor:default}
+.iconbtn svg{width:20px;height:20px}
+.stages{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.stage{height:8px;border-radius:99px;background:var(--line);overflow:hidden;position:relative}
+.stage span{position:absolute;inset:0;width:0;background:var(--accent);border-radius:inherit;transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.stage.done span{background:var(--good)}
+.count{font-family:var(--f-mono);font-size:14px;font-weight:700;min-width:62px;text-align:right;font-variant-numeric:tabular-nums}
+.count small{color:var(--muted);font-weight:500}
+.stage-name{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.card{
+  background:var(--surface);border-radius:28px;box-shadow:var(--shadow);padding:clamp(24px,5vw,44px);
+  min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:14px;position:relative;overflow:hidden;
+}
+.card .qnum{font-family:var(--f-mono);font-size:13px;color:var(--accent);font-weight:700;letter-spacing:.06em}
+.card .qtext{font-family:var(--f-display);font-weight:600;font-size:clamp(23px,4.6vw,32px);line-height:1.2;letter-spacing:-.015em;text-wrap:balance}
+.card.in{animation:cardIn .38s cubic-bezier(.2,.8,.2,1)}
+.card.back{animation:cardBack .38s cubic-bezier(.2,.8,.2,1)}
+@keyframes cardIn{from{opacity:0;transform:translateX(40px) rotate(1.5deg)}to{opacity:1;transform:none}}
+@keyframes cardBack{from{opacity:0;transform:translateX(-40px) rotate(-1.5deg)}to{opacity:1;transform:none}}
+.answers{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.ans{
+  border:0;background:var(--surface);border-radius:var(--r);padding:14px 6px 12px;display:grid;gap:4px;justify-items:center;
+  box-shadow:inset 0 0 0 1.5px var(--line);transition:transform .12s ease,box-shadow .15s ease,background .15s ease;
+}
+.ans b{font-family:var(--f-mono);font-size:22px;line-height:1}
+.ans span{font-size:12.5px;color:var(--muted);font-weight:600;line-height:1.2}
+.ans:hover{box-shadow:inset 0 0 0 2px var(--ink);transform:translateY(-2px)}
+.ans.sel{background:var(--accent);box-shadow:none}
+.ans.sel b,.ans.sel span{color:var(--accent-ink)}
+.ans.pop{animation:pop .3s ease}
+@keyframes pop{50%{transform:scale(1.08)}}
+.kbd-hint{text-align:center;font-size:13px;color:var(--muted)}
+.kbd-hint kbd{font-family:var(--f-mono);font-size:12px;padding:2px 6px;border-radius:6px;box-shadow:inset 0 0 0 1px var(--line)}
+@media (max-width:560px){
+  .answers{grid-template-columns:1fr;gap:8px}
+  .ans{grid-template-columns:36px 1fr;justify-items:start;align-items:center;padding:14px 18px;text-align:left}
+  .ans span{font-size:15px;color:var(--ink)}
+  .kbd-hint{display:none}
+  .card{min-height:180px}
+}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top,0px));transform:translate(-50%,-140%);z-index:20;
+  background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:16px;display:flex;gap:12px;align-items:center;
+  box-shadow:var(--shadow);transition:transform .45s cubic-bezier(.2,1.4,.4,1);max-width:calc(100% - 32px);
+}
+.toast.show{transform:translate(-50%,0)}
+.toast .medal{width:34px;height:34px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;flex:none}
+.toast b{display:block;font-family:var(--f-display);font-size:16px}
+.toast small{opacity:.75}
+
+/* ---------- Results ---------- */
+.results{display:grid;gap:22px}
+.hero{
+  background:var(--ink);color:var(--bg);border-radius:32px;padding:clamp(24px,6vw,44px);display:grid;gap:18px;position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,var(--accent) 0%,transparent 70%);opacity:.55;pointer-events:none;
+}
+.hero .eyebrow{color:inherit;opacity:.7}
+.hero h1{font-size:clamp(38px,9vw,64px);line-height:.95;font-weight:800}
+.hero p{margin:0;opacity:.82;max-width:48ch}
+.hero-stats{display:flex;flex-wrap:wrap;gap:12px 30px;align-items:flex-end;position:relative;z-index:1}
+.big{font-family:var(--f-mono);font-weight:700;font-size:clamp(44px,11vw,68px);line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-size:.38em;opacity:.6}
+.tier{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:14px}
+.tierbar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:min(260px,100%)}
+.tierbar i{height:6px;border-radius:9px;background:currentColor;opacity:.2}
+.tierbar i.on{opacity:1;background:var(--accent)}
+.tierlbl{font-family:var(--f-mono);font-size:11px;opacity:.7;letter-spacing:.08em;text-transform:uppercase;margin-top:6px}
+
+.panel{background:var(--surface);border-radius:28px;padding:clamp(20px,5vw,32px);box-shadow:var(--shadow);display:grid;gap:18px;min-width:0}
+.panel h2{font-size:24px}
+.panel-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%}
+
+.profile{position:relative;display:grid;gap:14px}
+.profile svg.link{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+.prow{display:grid;grid-template-columns:minmax(0,1fr) 2fr;gap:6px 16px;align-items:center}
+.plabel{font-weight:600;font-size:14.5px;line-height:1.25;display:flex;justify-content:space-between;gap:8px;min-width:0}
+.plabel .val{font-family:var(--f-mono);font-weight:700;font-variant-numeric:tabular-nums}
+.track{position:relative;height:30px;border-radius:10px;
+  background:
+    linear-gradient(90deg,transparent calc(20% - 1px),var(--line) calc(20% - 1px),var(--line) 20%,transparent 20%,transparent calc(40% - 1px),var(--line) calc(40% - 1px),var(--line) 40%,transparent 40%,transparent calc(60% - 1px),var(--line) calc(60% - 1px),var(--line) 60%,transparent 60%,transparent calc(80% - 1px),var(--line) calc(80% - 1px),var(--line) 80%,transparent 80%),
+    var(--bg);}
+.fill{position:absolute;left:0;top:0;bottom:0;border-radius:10px;width:0;opacity:.22;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.dot{position:absolute;top:50%;left:0;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;
+  display:grid;place-items:center;font-family:var(--f-mono);font-size:12px;font-weight:700;color:#fff;
+  transition:left 1s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 0 3px var(--surface);z-index:2}
+.lv-strong{--c:var(--good)} .lv-solid{--c:var(--sky)} .lv-grow{--c:var(--accent)}
+.prow .dot,.prow .fill{background:var(--c)}
+.axis{display:grid;grid-template-columns:minmax(0,1fr) 2fr;gap:16px}
+.axis div:last-child{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+@media (max-width:560px){
+  .prow,.axis{grid-template-columns:1fr}
+  .axis div:first-child{display:none}
+  .profile svg.link{display:none}
+}
+
+.cards2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media (max-width:640px){.cards2{grid-template-columns:1fr}}
+.list{display:grid;gap:14px;margin:0;padding:0;list-style:none}
+.list li{display:grid;grid-template-columns:42px 1fr;gap:12px;align-items:start}
+.badge{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:15px}
+.badge.s{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.badge.g{background:var(--accent-soft);color:var(--accent)}
+.list b{display:block;font-size:15px}
+.list p{margin:2px 0 0;font-size:14px;color:var(--muted)}
+
+.honesty{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center}
+.gauge{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-mono);font-weight:700;font-size:20px;
+  background:conic-gradient(var(--hc) calc(var(--p)*1%),var(--line) 0);position:relative}
+.gauge::before{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--surface)}
+.gauge span{position:relative}
+.honesty p{margin:0;font-size:14.5px;color:var(--muted)}
+.honesty b{color:var(--ink)}
+
+details{border-top:1px solid var(--line);padding-top:14px}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-family:var(--f-mono);font-size:20px;color:var(--muted)}
+details[open] summary::after{content:"–"}
+.tablewrap{overflow-x:auto;margin-top:12px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th:first-child,td:first-child{text-align:left;white-space:normal}
+th{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+tfoot td{font-weight:700;border-bottom:0}
+
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.note{text-align:center;font-size:13px;color:var(--muted);margin:0}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:30;width:100%;height:100%}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<canvas id="confetti" hidden></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"><div class="medal" id="toastMedal">1</div><div><b id="toastTitle"></b><small id="toastSub"></small></div></div>
+
+<main class="wrap">
+  <!-- INTRO -->
+  <section class="intro" id="intro">
+    <div class="mark"><i>PEC</i>SELF-RATING</div>
+    <h1>What kind of <em>entrepreneur</em> are you?</h1>
+    <p class="lede">Rate 55 short statements about how you work. You get a profile of your 10 Personal Entrepreneurial Competencies, your strongest traits, and what to grow next.</p>
+    <div class="facts">
+      <span><b>55</b> statements</span>
+      <span><b>~8</b> minutes</span>
+      <span><b>10</b> competencies</span>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:10px">How true is each statement for you?</div>
+      <div class="scale-hint">
+        <div><b>1</b>Never</div><div><b>2</b>Rarely</div><div><b>3</b>Sometimes</div><div><b>4</b>Usually</div><div><b>5</b>Always</div>
+      </div>
+    </div>
+    <div><button class="btn" id="startBtn" type="button">Start the test
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div>
+    <p class="lede" style="font-size:14px">Answer for who you are today, not who you want to be. The test includes a built-in honesty check.</p>
+  </section>
+
+  <!-- QUIZ -->
+  <section class="quiz" id="quiz" hidden>
+    <div class="topbar">
+      <button class="iconbtn" id="backBtn" type="button" aria-label="Previous statement">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+      </button>
+      <div class="stages" id="stages" aria-hidden="true"></div>
+      <div class="count" id="count">1<small>/55</small></div>
+    </div>
+    <div class="stage-name"><span class="eyebrow" id="stageLabel">Stage 1 · Warm-up</span></div>
+    <article class="card in" id="card" aria-live="polite">
+      <div class="qnum" id="qnum">STATEMENT 01</div>
+      <div class="qtext" id="qtext"></div>
+    </article>
+    <div class="answers" id="answers" role="group" aria-label="Your rating"></div>
+    <div class="kbd-hint">Tip: press <kbd>1</kbd>–<kbd>5</kbd> to answer, <kbd>←</kbd> to go back</div>
+  </section>
+
+  <!-- RESULTS -->
+  <section class="results" id="results" hidden>
+    <div class="hero">
+      <div class="eyebrow">Your entrepreneur type</div>
+      <h1 id="archetype">The Architect</h1>
+      <p id="archetypeDesc"></p>
+      <div class="hero-stats">
+        <div>
+          <div class="big"><span id="totalNum">0</span><small>/250</small></div>
+          <div class="tierlbl">Corrected PEC score</div>
+        </div>
+        <div>
+          <div class="tier" id="tierName">Builder</div>
+          <div class="tierbar" id="tierBar" style="margin-top:10px"><i></i><i></i><i></i><i></i></div>
+          <div class="tierlbl">Starter · Explorer · Builder · Trailblazer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Your PEC profile</h2>
+        <div class="legend">
+          <span><i style="background:var(--good)"></i>Strong 20+</span>
+          <span><i style="background:var(--sky)"></i>Solid 15–19</span>
+          <span><i style="background:var(--accent)"></i>Growing &lt;15</span>
+        </div>
+      </div>
+      <div class="profile" id="profile"></div>
+      <div class="axis"><div></div><div><span>0</span><span>5</span><span>10</span><span>15</span><span>20</span><span>25</span></div></div>
+    </div>
+
+    <div class="cards2">
+      <div class="panel">
+        <h2>Superpowers</h2>
+        <ul class="list" id="strengths"></ul>
+      </div>
+      <div class="panel">
+        <h2>Level up next</h2>
+        <ul class="list" id="growth"></ul>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Honesty check</h2>
+      <div class="honesty">
+        <div class="gauge" id="gauge"><span id="cfNum">0</span></div>
+        <p id="cfText"></p>
+      </div>
+      <details>
+        <summary>See the full score sheet</summary>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th>Competency</th><th>Score</th><th>Correction</th><th>Corrected</th></tr></thead>
+            <tbody id="sheet"></tbody>
+            <tfoot><tr><td>Total</td><td id="tRaw"></td><td></td><td id="tCor"></td></tr></tfoot>
+          </table>
+        </div>
+      </details>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="shareBtn" type="button">Share my result</button>
+      <button class="btn ghost" id="retakeBtn" type="button">Retake test</button>
+    </div>
+    <p class="note" id="shareNote" aria-live="polite">Your answers stay on this device and clear when you refresh.</p>
+  </section>
+</main>
+
+<script>
+(function(){
+"use strict";
+const Q = [
+"I look for things that need to be done.",
+"I prefer situations in which I can control the outcomes as much as possible.",
+"It bothers me when things are not done very well.",
+"When faced with a difficult problem, I try a lot of different things looking for a solution.",
+"I complete my work on time.",
+"When starting a new task or project, I gather a great deal of information before going ahead.",
+"I like to think about the future.",
+"I plan a large project by breaking it down into smaller tasks.",
+"I get others to support my recommendations.",
+"I feel confident that I will succeed at whatever I try to do.",
+"No matter whom I’m talking to, I’m a good listener.",
+"I do things that need to be done before being asked to by others.",
+"I don’t try something new without doing everything I can to ensure I will succeed.",
+"My own work is better than that of other people I work with.",
+"I try several times to get people to do what I would like them to do.",
+"I keep the promises I make.",
+"I seek the advice of people who know a lot about the tasks I am working on.",
+"It’s a waste of time to worry about what to do with your life.",
+"I think about the advantages and disadvantages of different ways of accomplishing things.",
+"I do not spend much time thinking about how to influence others.",
+"I change my mind if others disagree strongly with me.",
+"I feel resentful when I don’t get my way.",
+"I like challenges and new opportunities.",
+"I weigh my chances of succeeding or failing before I decide to do something.",
+"It bothers me when my time is wasted.",
+"When something gets in the way of what I am trying to do, I keep on trying to accomplish what I want.",
+"I am happy to do someone else’s work if necessary to get the job done on time.",
+"I take action without wasting time gathering information.",
+"The more specific I can be about what I want out of life, the more chance I have to succeed.",
+"I try to think of all problems I may encounter and plan what to do if each problem occurs.",
+"I get important people to help me accomplish my goals.",
+"When trying something difficult or challenging, I feel confident that I will succeed.",
+"In the past, I have had failures.",
+"I prefer activities that I know well and with which I am comfortable.",
+"I do things that are risky.",
+"I’m never entirely happy with the way in which things are done: I always think there must be a better way.",
+"When faced with major difficulties, I quickly go on to other things.",
+"When I am doing a job for someone, I make a special effort to make sure the person is happy with my work.",
+"When working on a project for someone, I ask many questions to be sure I understand what that person wants.",
+"I have a very clear plan of my life.",
+"I deal with problems as they arise, rather than spend time trying to anticipate them.",
+"In order to reach my goals, I think of solutions that benefit everyone involved in a problem.",
+"I do very good work.",
+"There have been occasions when I took advantage of someone.",
+"I try things that are very new and different from what I have done before.",
+"I do things that others consider risky.",
+"I find ways to complete tasks faster at work and at home.",
+"I try several ways to overcome things that get in the way of reaching my goals.",
+"My family and personal life are more important to me than work deadlines I set for myself.",
+"I go to several different sources to get information or to get help with tasks or projects.",
+"I am as concerned about meeting my weekly goals as I am for my yearly goals.",
+"If one approach to a problem does not work, I think of another approach.",
+"I am able to get people who have strong opinions or ideas to change their minds.",
+"I stick with my decisions even if others disagree strongly with me.",
+"When I don’t know something, I don’t mind admitting it."
+];
+
+/* Formulas exactly as on the scoring sheet: negative item numbers are subtracted. */
+const PECS = [
+ {name:"Opportunity Seeking and Initiative", short:"Opportunity Seeking", f:[1,12,23,-34,45], k:6,
+  type:"The Opportunity Hunter", type_d:"You spot what needs doing and move before anyone asks.",
+  s:"You see openings early and act on them without waiting.",
+  tip:"Each week, note one problem around you and take one step on it before anyone asks."},
+ {name:"Risk Taking", short:"Risk Taking", f:[2,13,24,-35,46], k:6,
+  type:"The Calculated Bettor", type_d:"You take risks, but only after you have weighed the odds.",
+  s:"You weigh the odds and take moderate, calculated risks.",
+  tip:"Run one small, time-boxed experiment on an idea you have been holding back."},
+ {name:"Demand for Efficiency and Quality", short:"Efficiency & Quality", f:[3,14,25,36,47], k:0,
+  type:"The Perfectionist", type_d:"You raise the bar and keep finding a better, faster way.",
+  s:"You push for higher standards and faster ways of working.",
+  tip:"Pick one routine task, set a quality or time target, and measure it."},
+ {name:"Persistence", short:"Persistence", f:[4,15,26,-37,48], k:6,
+  type:"The Unstoppable", type_d:"Obstacles slow you down, they do not stop you.",
+  s:"You keep going and try new routes when blocked.",
+  tip:"When a plan stalls, list three other ways around the obstacle before you drop it."},
+ {name:"Commitment to the Work Contract", short:"Commitment", f:[5,16,27,38,-49], k:6,
+  type:"The Promise Keeper", type_d:"People trust you because you deliver what you promise.",
+  s:"You keep promises and go the extra mile for the people you serve.",
+  tip:"Make fewer promises and keep every one. Track the deadlines you give others."},
+ {name:"Information Seeking", short:"Information Seeking", f:[6,17,-28,39,50], k:6,
+  type:"The Investigator", type_d:"You dig for facts and ask the right people before you act.",
+  s:"You research, ask experts and check several sources.",
+  tip:"Before your next decision, talk to two people who know the field."},
+ {name:"Goal Setting", short:"Goal Setting", f:[7,-18,29,40,51], k:6,
+  type:"The Navigator", type_d:"You know where you are going and set clear goals to get there.",
+  s:"You set clear, specific goals for the short and long term.",
+  tip:"Write one goal for this year and break it into what you will do this week."},
+ {name:"Systematic Planning and Monitoring", short:"Planning & Monitoring", f:[8,19,30,-41,52], k:6,
+  type:"The Architect", type_d:"You break big plans into steps and track them as you go.",
+  s:"You plan in steps, anticipate problems and track progress.",
+  tip:"Break your next project into dated steps and review them every week."},
+ {name:"Persuasion and Networking", short:"Persuasion & Networking", f:[9,-20,31,42,53], k:6,
+  type:"The Connector", type_d:"You bring people with you and build networks that open doors.",
+  s:"You win support and use your network to reach goals.",
+  tip:"List who could help your goal and how each of them benefits from saying yes."},
+ {name:"Independence and Self-Confidence", short:"Self-Confidence", f:[10,-21,32,43,54], k:6,
+  type:"The Self-Starter", type_d:"You trust your own judgement and stand by your decisions.",
+  s:"You trust your judgement and stand by your decisions.",
+  tip:"Make one decision this week on your own judgement and stick with it."}
+];
+const CF = {f:[11,-22,-33,-44,55], k:18};
+const LABELS = ["Never","Rarely","Sometimes","Usually","Always"];
+const STAGES = ["Warm-up","Momentum","Deep dive","Home stretch","Final push"];
+const PER = 11;
+
+const $ = id => document.getElementById(id);
+let ans = new Array(55).fill(0), idx = 0, busy = false;
+
+/* intro chips */
+$("chips").innerHTML = PECS.map(p=>`<span class="chip">${p.short}</span>`).join("");
+
+/* stages + answer buttons */
+$("stages").innerHTML = STAGES.map(()=>'<div class="stage"><span></span></div>').join("");
+$("answers").innerHTML = LABELS.map((l,i)=>`<button class="ans" type="button" data-v="${i+1}" id="ans${i+1}"><b>${i+1}</b><span>${l}</span></button>`).join("");
+
+function show(id){ ["intro","quiz","results"].forEach(s=>$(s).hidden = s!==id); window.scrollTo({top:0}); }
+
+function render(dir){
+  const card = $("card");
+  $("qnum").textContent = "STATEMENT " + String(idx+1).padStart(2,"0");
+  $("qtext").textContent = Q[idx];
+  $("count").innerHTML = (idx+1) + "<small>/55</small>";
+  const st = Math.floor(idx/PER);
+  $("stageLabel").textContent = `Stage ${st+1} · ${STAGES[st]}`;
+  document.querySelectorAll(".stage").forEach((el,i)=>{
+    const answered = ans.slice(i*PER,(i+1)*PER).filter(Boolean).length;
+    el.querySelector("span").style.width = (answered/PER*100)+"%";
+    el.classList.toggle("done", answered===PER);
+  });
+  document.querySelectorAll(".ans").forEach(b=>b.classList.toggle("sel", +b.dataset.v===ans[idx]));
+  $("backBtn").disabled = idx===0;
+  card.classList.remove("in","back"); void card.offsetWidth; card.classList.add(dir==="back"?"back":"in");
+}
+
+function answer(v){
+  if(busy) return;
+  busy = true;
+  ans[idx] = v;
+  const b = $("ans"+v);
+  document.querySelectorAll(".ans").forEach(x=>x.classList.toggle("sel", x===b));
+  b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop");
+  const st = Math.floor(idx/PER);
+  const stageNowDone = ans.slice(st*PER,(st+1)*PER).every(Boolean);
+  setTimeout(()=>{
+    busy = false;
+    if(ans.every(Boolean) && idx===54){ finish(); return; }
+    if(stageNowDone && (idx+1)%PER===0 && idx<54) toast(st+1, `Stage ${st+1} cleared`, `${STAGES[st+1]} next · ${55-(idx+1)} to go`);
+    // jump to next unanswered, else next
+    let n = idx+1;
+    if(n>54){ n = ans.findIndex(a=>!a); if(n<0){ finish(); return; } }
+    idx = n; render("in");
+  }, 230);
+}
+
+function back(){ if(idx>0 && !busy){ idx--; render("back"); } }
+
+let tt;
+function toast(n,title,sub){
+  $("toastMedal").textContent = n; $("toastTitle").textContent = title; $("toastSub").textContent = sub;
+  const t = $("toast"); t.classList.add("show"); clearTimeout(tt); tt = setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+/* scoring */
+const calc = (f,k) => f.reduce((s,n)=> s + (n>0 ? ans[n-1] : -ans[-n-1]), 0) + k;
+function correctionNumber(cf){ return cf>=24?7 : cf>=22?5 : cf>=20?3 : 0; }
+const level = v => v>=20?"strong" : v>=15?"solid" : "grow";
+
+function finish(){
+  const cf = calc(CF.f, CF.k), corr = correctionNumber(cf);
+  const rows = PECS.map((p,i)=>{ const raw = calc(p.f,p.k); return {p, i, raw, cor: Math.max(0, raw-corr)}; });
+  const total = rows.reduce((s,r)=>s+r.cor,0), rawTotal = rows.reduce((s,r)=>s+r.raw,0);
+  const sorted = [...rows].sort((a,b)=> b.cor-a.cor || a.i-b.i);
+  const top = sorted[0];
+
+  $("archetype").textContent = top.p.type;
+  $("archetypeDesc").textContent = top.p.type_d + ` Your strongest competency is ${top.p.name}.`;
+  const tiers = ["Starter","Explorer","Builder","Trailblazer"];
+  const ti = total>=210?3 : total>=180?2 : total>=150?1 : 0;
+  $("tierName").textContent = "Level " + (ti+1) + " · " + tiers[ti];
+  document.querySelectorAll("#tierBar i").forEach((el,i)=>el.classList.toggle("on", i<=ti));
+
+  // profile
+  $("profile").innerHTML = '<svg class="link" id="linkSvg" aria-hidden="true"><polyline id="poly" fill="none" stroke="var(--ink)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/></svg>' +
+    rows.map(r=>`<div class="prow lv-${level(r.cor)}"><div class="plabel"><span>${r.p.name}</span><span class="val">${r.cor}</span></div>
+      <div class="track" role="img" aria-label="${r.p.name}: ${r.cor} of 25"><div class="fill"></div><div class="dot">✕</div></div></div>`).join("");
+
+  // strengths / growth
+  const item = (r,cls,text) => `<li><div class="badge ${cls}">${r.cor}</div><div><b>${r.p.name}</b><p>${text}</p></div></li>`;
+  $("strengths").innerHTML = sorted.slice(0,3).map(r=>item(r,"s",r.p.s)).join("");
+  $("growth").innerHTML = sorted.slice(-3).reverse().map(r=>item(r,"g",r.p.tip)).join("");
+
+  // honesty
+  const g = $("gauge");
+  g.style.setProperty("--p", Math.round((cf-5)/20*100));
+  g.style.setProperty("--hc", corr? "var(--accent)" : "var(--good)");
+  $("cfNum").textContent = cf;
+  $("cfText").innerHTML = corr
+    ? `Your correction factor is <b>${cf}</b>, which suggests you rated yourself quite favourably. To keep the profile realistic, <b>${corr} points</b> were subtracted from each competency.`
+    : `Your correction factor is <b>${cf}</b> (19 or less), so your answers look balanced and <b>no correction</b> was needed.`;
+
+  $("sheet").innerHTML = rows.map(r=>`<tr><td>${r.p.name}</td><td>${r.raw}</td><td>−${corr}</td><td>${r.cor}</td></tr>`).join("");
+  $("tRaw").textContent = rawTotal; $("tCor").textContent = total;
+
+  lastShare = `My PEC entrepreneur type: ${top.p.type} (${total}/250, ${tiers[ti]}). Top strengths: ${sorted.slice(0,3).map(r=>r.p.short).join(", ")}. Take the test:`;
+
+  show("results");
+  // animate in
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    document.querySelectorAll(".prow").forEach((row,i)=>{
+      const pct = rows[i].cor/25*100;
+      row.querySelector(".fill").style.width = pct+"%";
+      row.querySelector(".dot").style.left = pct+"%";
+    });
+    countUp($("totalNum"), total);
+    drawLink(); setTimeout(drawLink, 1050);
+    confetti();
+  }));
+}
+
+function drawLink(){
+  const prof = $("profile"); if(!prof || $("results").hidden) return;
+  const base = prof.getBoundingClientRect();
+  const pts = [...prof.querySelectorAll(".dot")].map(d=>{
+    const r = d.getBoundingClientRect();
+    return (r.left+r.width/2-base.left).toFixed(1)+","+(r.top+r.height/2-base.top).toFixed(1);
+  });
+  $("poly").setAttribute("points", pts.join(" "));
+}
+window.addEventListener("resize", drawLink);
+
+function countUp(el, to){
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){ el.textContent = to; return; }
+  const t0 = performance.now(), d = 1100;
+  (function step(t){ const p = Math.min(1,(t-t0)/d); el.textContent = Math.round(to*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(step); })(t0);
+}
+
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = $("confetti"), ctx = c.getContext("2d"); c.hidden = false;
+  const W = c.width = innerWidth*devicePixelRatio, H = c.height = innerHeight*devicePixelRatio;
+  const css = getComputedStyle(document.documentElement);
+  const cols = ["--accent","--sky","--good","--gold"].map(v=>css.getPropertyValue(v).trim());
+  const P = Array.from({length:140},()=>({x:W/2+(Math.random()-.5)*W*.2,y:H*.35,vx:(Math.random()-.5)*26*devicePixelRatio,vy:(-Math.random()*22-6)*devicePixelRatio,
+    s:(5+Math.random()*7)*devicePixelRatio,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.floor(Math.random()*4)]}));
+  const t0 = performance.now();
+  (function frame(t){
+    ctx.clearRect(0,0,W,H);
+    P.forEach(p=>{ p.vy += .7*devicePixelRatio; p.vx*=.985; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle=p.c; ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); ctx.restore(); });
+    if(t-t0<2600) requestAnimationFrame(frame); else { ctx.clearRect(0,0,W,H); c.hidden = true; }
+  })(t0);
+}
+
+let lastShare = "";
+async function share(){
+  const url = location.href.split("#")[0];
+  const note = $("shareNote");
+  if(navigator.share){
+    try{ await navigator.share({title:"PEC Self-Rating", text:lastShare, url}); return; }catch(e){ if(e && e.name==="AbortError") return; }
+  }
+  try{ await navigator.clipboard.writeText(lastShare+" "+url); note.textContent = "Copied to clipboard. Paste it anywhere to share."; }
+  catch(e){ note.textContent = lastShare+" "+url; }
+}
+
+/* events */
+$("startBtn").addEventListener("click", ()=>{ show("quiz"); render("in"); });
+$("answers").addEventListener("click", e=>{ const b = e.target.closest(".ans"); if(b) answer(+b.dataset.v); });
+$("backBtn").addEventListener("click", back);
+$("retakeBtn").addEventListener("click", ()=>{ ans.fill(0); idx = 0; $("shareNote").textContent = "Your answers stay on this device and clear when you refresh."; show("intro"); });
+$("shareBtn").addEventListener("click", share);
+document.addEventListener("keydown", e=>{
+  if($("quiz").hidden || e.metaKey || e.ctrlKey || e.altKey) return;
+  if(e.key>="1" && e.key<="5"){ e.preventDefault(); answer(+e.key); }
+  else if(e.key==="ArrowLeft" || e.key==="Backspace"){ e.preventDefault(); back(); }
+});
+})();
+</script>
+</body>
+</html>
